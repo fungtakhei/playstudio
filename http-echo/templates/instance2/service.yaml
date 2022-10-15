@@ -1,0 +1,16 @@
+{{ if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "http-echo.labels" . | nindent 4 }}
+  name: {{ (list (include "http-echo.fullname" .) "instance2" | join "-") }}
+spec:
+  ports:
+  - port: {{ .Values.service.port.instance2 | default .Values.containerPort.instance2 | default .Values.image.args.listen.instance2 }}
+    targetPort: {{ .Values.containerPort.instance2 | default .Values.image.args.listen.instance2 }}
+    nodePort: {{ .Values.service.nodePort.instance2 }}
+  selector:
+    app: {{ (list (include "http-echo.fullname" .) "instance2" | join "-") }}
+  type: {{ .Values.service.type.instance2 }}
+{{ end }}

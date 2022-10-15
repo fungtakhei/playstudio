@@ -1,0 +1,109 @@
+# Default values for http-echo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+# THOUGHTS
+# value organizing approach: instances first or key first 
+# key first: e.g. containerPort.instanceX
+#    shared value without instanceX. e.g image.args.text vs image.args.text.instanceX
+# instance first: e.g. instanceX.containerPort;
+#    shared value grouped in common section and even further add prefix e.g. common.containerPort
+# as it is a simple application, I use instance first approach, otherwise, I prefer instance first approach
+
+#production env must be >1 for resiliency
+replicaCount: 2
+
+image:
+  repository: hashicorp/http-echo
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.2.3"
+  args:
+    text: hello
+    listen:
+      instance1: 8080
+      instance2: 8081
+
+nameOverride: ""
+fullnameOverride: ""
+
+#nodePort -> ingress -> service -> pod(containerPort) no need to be same port
+#just for any misunderstanding about the chanllege
+#align all involved port used in ingress, service, pod to stated in the chanllege
+containerPort:
+  #the image default listen on 5678, https://github.com/hashicorp/http-echo
+  #if not defined, it use image.args.listen
+  #overrides whose default in image.args.listen
+  instance1: 8080
+  instance2: 8081
+  
+livenessProbe:
+  instance1:
+    httpGet:
+      path: /
+      port: 8080
+  instance2:
+    httpGet:
+      path: /
+      port: 8081
+readinessProbe:
+  instance1:
+    httpGet:
+      path: /
+      port: 8080
+  instance2:
+    httpGet:
+      path: /
+      port: 8081
+
+service:
+  #service should always be used to route traffic to pod for flexibility, just like dns route ip
+  #production env should be included
+  enabled: true
+  type:
+    instance1: ClusterIP
+    #nginx ingress not support multiple port
+    #the requirement is not path/hostname routing, but port based, use nodeport for instance2
+    #update KIND cluster with port mapping to nodeport
+    instance2: NodePort
+  port:
+    #service port can be different from targetPort/containerPort
+    #if not defined, it use containerPort
+    #overrides whose default in containerPort
+    instance1: 8080
+    instance2: 8081
+  nodePort:
+    instance2: 30081
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: "localhost"
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  tls: []
+
+resources:
+  #best practice to define and limit the resources, fine tune with monitoring/APM
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

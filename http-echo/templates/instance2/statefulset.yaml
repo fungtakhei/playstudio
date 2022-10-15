@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    {{- include "http-echo.labels" . | nindent 4 }}
+  name: {{ (list (include "http-echo.fullname" .) "instance2") | join "-" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ (list (include "http-echo.fullname" .) "instance2") | join "-" }}
+  template:
+    metadata:
+      labels:
+        app: {{ (list (include "http-echo.fullname" .) "instance2") | join "-" }}
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        name: {{ .Chart.Name }}
+        args: ['-text={{ .Values.image.args.text }}', '-listen=:{{ .Values.image.args.listen.instance2 }}']
+        ports:
+        - containerPort: {{ .Values.containerPort.instance2 | default .Values.image.args.listen.instance2 }}
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe.instance2 | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe.instance2 | nindent 10 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}

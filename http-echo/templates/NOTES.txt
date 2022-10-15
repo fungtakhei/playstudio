@@ -1,0 +1,22 @@
+* Get the application through KIND cluster by running these commands:
+    for instance1:
+      #curl http://localhost:8080
+    for instance2:
+      #curl http://localhost:8081
+
+
+* To troubleshoot, test the application through service by port forward:
+    for instance1:
+      #kubectl -n {{ .Release.Namespace }} port-forward service/{{ (list (include "http-echo.fullname" .) "instance1" | join "-") }} 18080:{{ .Values.service.port.instance1 }}
+      #curl http://localhost:18080
+    for instance2:
+      #kubectl -n {{ .Release.Namespace }} port-forward service/{{ (list (include "http-echo.fullname" .) "instance2" | join "-") }} 18081:{{ .Values.service.port.instance2 }}
+      #curl http://localhost:18081
+
+* To troubleshoot, test the application through deployment/statefulset by port forward:
+    for instance1:
+      #kubectl -n {{ .Release.Namespace }} port-forward deploy/{{ (list (include "http-echo.fullname" .) "instance1" | join "-") }} 18080:{{ .Values.containerPort.instance1 | default .Values.image.args.listen.instance1 }}
+      #curl http://localhost:18080
+    for instance2:
+      #kubectl -n {{ .Release.Namespace }} port-forward statefulset/{{ (list (include "http-echo.fullname" .) "instance2" | join "-") }} 18081:{{ .Values.containerPort.instance2 | default .Values.image.args.listen.instance2 }}
+      #curl http://localhost:18081
