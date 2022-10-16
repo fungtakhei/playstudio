@@ -6,6 +6,7 @@ metadata:
   name: {{ (list (include "http-echo.fullname" .) "instance2") | join "-" }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ (list (include "http-echo.fullname" .) "instance2") | join "-" }}
   selector:
     matchLabels:
       app: {{ (list (include "http-echo.fullname" .) "instance2") | join "-" }}
