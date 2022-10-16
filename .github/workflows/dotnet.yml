@@ -17,9 +17,9 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 3.1.x
-    - name: Restore dependencies
-      run: dotnet restore ./PlayStudios.MyService/
     - name: test
       run: dotnet test ./PlayStudios.MyService/
     - name: pack
-      run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist  
+      run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist
+    - name: dockerize
+      run: docker build . --file Dockerfile --tag playstudio:$(date +%s)
