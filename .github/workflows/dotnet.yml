@@ -20,6 +20,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./PlayStudios.MyService/
     - name: test
-      run: dotnet test dotnet test ./PlayStudios.MyService/
+      run: dotnet test ./PlayStudios.MyService/
     - name: pack
       run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist  
