@@ -25,7 +25,7 @@ jobs:
     - name: dockerize
       run: |
         docker build . --file Dockerfile --tag playstudio:$(date +%s)
-        docker run --rm playstudio
+        docker image ls
         
   create-cluster:
     runs-on: ubuntu-latest
