@@ -22,4 +22,6 @@ jobs:
     - name: pack
       run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist
     - name: dockerize
-      run: docker build . --file Dockerfile --tag playstudio:$(date +%s)
+      run: |
+        docker build . --file Dockerfile --tag playstudio:$(date +%s)
+        docker run --rm playstudio
