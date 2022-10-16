@@ -12,20 +12,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: checkout code
-      uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 3.1.x
-    - name: test
-      run: dotnet test ./PlayStudios.MyService/
-    - name: pack
-      run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist
-    - name: dockerize
-      run: |
-        docker build . --file Dockerfile --tag playstudio:$(date +%s)
-        docker image ls
+#    - name: checkout code
+#      uses: actions/checkout@v3
+#    - name: Setup .NET
+#      uses: actions/setup-dotnet@v3
+#      with:
+#        dotnet-version: 3.1.x
+#    - name: test
+#      run: dotnet test ./PlayStudios.MyService/
+#    - name: pack
+#      run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist
+#    - name: dockerize
+#      run: |
+#        docker build . --file Dockerfile --tag playstudio:$(date +%s)
+#        docker image ls
         
   create-cluster:
     runs-on: ubuntu-latest
@@ -46,6 +46,6 @@ jobs:
           --selector=app.kubernetes.io/component=controller \
           --timeout=90s
     - name: helm deploy
-      run: helm install http-echo http-echo
+      run: helm install http-echo --namespace dev --create-namespace --dry-run http-echo/
     - name: curl
       run: curl http://localhost:8080
