@@ -44,6 +44,9 @@ jobs:
           --selector=app.kubernetes.io/component=controller \
           --timeout=90s
     - name: helm deploy
-      run: helm install http-echo --namespace dev --create-namespace --dry-run http-echo/
+      run: helm install http-echo --namespace dev --create-namespace http-echo/
     - name: curl
-      run: curl http://localhost:8080
+      run: |
+        sleep 15
+        curl http://localhost:8080
+        curl http://localhost:8081
