@@ -65,6 +65,14 @@ jobs:
         config: resources/cluster.yaml
         image: kindest/node:v1.25.2
 
+    - name: deploy nginx ingress
+      run: | 
+        kubectl apply -f ./resources/ingress.yaml
+        kubectl wait --namespace ingress-nginx \
+          --for=condition=ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=90s
+
     - name: load the playstudio docker image into kind cluster
       run: kind load image-archive playstudio.tar
     
@@ -72,4 +80,4 @@ jobs:
       run: |
         kubectl run playstudio --image=playstudio:latest --image-pull-policy=IfNotPresent
         sleep 5
-        kubectl get pod        
+        kubectl get pod   
