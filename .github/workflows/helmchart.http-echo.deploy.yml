@@ -41,5 +41,5 @@ jobs:
     - name: verify deployment by curl
       run: |
         sleep 15
-        curl http://localhost:8080
-        curl http://localhost:8081
+        curl -s http://localhost:8080
+        curl -s http://localhost:8081
