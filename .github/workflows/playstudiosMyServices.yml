@@ -35,10 +35,10 @@ jobs:
         run: dotnet publish ./PlayStudios.MyService/PlayStudios.MyService.WebApi/ -c Release -o ./dist
 
       - name: dockerize the package
-        run: docker build . --file Dockerfile --tag playstudios:$SOURCE_COMMIT
+        run: docker build . --file Dockerfile --tag playstudios:latest
          
       - name: save the image as tar for deployment
-        run: docker save playstudios:$SOURCE_COMMIT -o playstudio.tar
+        run: docker save playstudios:latest -o playstudio.tar
 
       - name: Cache
         uses: actions/cache@v3.0.11
@@ -68,4 +68,4 @@ jobs:
       run: kind load docker-archive playstudio.tar
     
     - name: deploy the docker image into dev cluster
-      run: kubectl run playstudio --image=playstudio:$SOURCE_COMMIT --image-pull-policy=IfNotPresent
+      run: kubectl run playstudio --image=playstudio:latest --image-pull-policy=IfNotPresent
