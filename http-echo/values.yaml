@@ -57,6 +57,11 @@ readinessProbe:
       path: /
       port: 8081
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+
 service:
   #service should always be used to route traffic to pod for flexibility, just like dns route ip
   #production env should be included

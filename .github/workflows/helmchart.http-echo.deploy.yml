@@ -36,7 +36,7 @@ jobs:
           --timeout=90s
           
     - name: deploy http-echo helm chart 
-      run: helm install http-echo --namespace dev --create-namespace http-echo/
+      run: helm install http-echo --namespace http-echo --create-namespace http-echo/
       
     - name: verify deployment by curl
       run: |
