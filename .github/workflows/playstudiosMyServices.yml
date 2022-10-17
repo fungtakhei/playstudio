@@ -73,3 +73,57 @@ jobs:
         kubectl run playstudios --image=playstudios:latest --image-pull-policy=IfNotPresent
         sleep 5
         kubectl get pod   
+
+deploy_qa:
+    runs-on: ubuntu-latest
+    needs: test_build
+    environment: qa
+    steps:
+    - name: restore cache
+      uses: actions/cache@v2
+      id: restore-build
+      with:
+        path: ./*
+        key: ${{ github.sha }}
+        
+    - name: create KIND k8s cluster
+      uses: helm/kind-action@v1.3.0
+      with:        
+        image: kindest/node:v1.25.2
+        cluster_name: kind
+
+    - name: load the playstudio docker image into kind cluster
+      run: kind load image-archive playstudios.tar
+    
+    - name: deploy the docker image into dev cluster
+      run: |
+        kubectl run playstudios --image=playstudios:latest --image-pull-policy=IfNotPresent
+        sleep 5
+        kubectl get pod   
+
+deploy_prod:
+    runs-on: ubuntu-latest
+    needs: test_build
+    environment: prod
+    steps:
+    - name: restore cache
+      uses: actions/cache@v2
+      id: restore-build
+      with:
+        path: ./*
+        key: ${{ github.sha }}
+        
+    - name: create KIND k8s cluster
+      uses: helm/kind-action@v1.3.0
+      with:        
+        image: kindest/node:v1.25.2
+        cluster_name: kind
+
+    - name: load the playstudio docker image into kind cluster
+      run: kind load image-archive playstudios.tar
+    
+    - name: deploy the docker image into dev cluster
+      run: |
+        kubectl run playstudios --image=playstudios:latest --image-pull-policy=IfNotPresent
+        sleep 5
+        kubectl get pod   
