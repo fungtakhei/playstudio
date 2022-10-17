@@ -65,7 +65,7 @@ jobs:
         image: kindest/node:v1.25.2
 
     - name: load the playstudio docker image into kind cluster
-      run: kind load docker-archive playstudio.tar
+      run: kind load image-archive playstudio.tar
     
     - name: deploy the docker image into dev cluster
       run: kubectl run playstudio --image=playstudio:latest --image-pull-policy=IfNotPresent
