@@ -63,22 +63,12 @@ jobs:
         
     - name: create KIND k8s cluster
       uses: helm/kind-action@v1.3.0
-      with:
-        config: resources/cluster.yaml
+      with:        
         image: kindest/node:v1.25.2
-
-    - name: deploy nginx ingress
-      run: | 
-        kubectl apply -f ./resources/ingress.yaml
-        kubectl wait --namespace ingress-nginx \
-          --for=condition=ready pod \
-          --selector=app.kubernetes.io/component=controller \
-          --timeout=90s
+        cluster_name: kind
 
     - name: load the playstudio docker image into kind cluster
-      run: |
-        ls ./
-        kind load image-archive playstudio.tar
+      run: kind load image-archive playstudio.tar
     
     - name: deploy the docker image into dev cluster
       run: |
