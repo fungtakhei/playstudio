@@ -38,7 +38,7 @@ jobs:
         run: docker build . --file Dockerfile --tag playstudios:latest
          
       - name: save the image as tar for deployment
-        run: docker save playstudios:latest -o playstudio.tar
+        run: docker save playstudios:latest -o playstudios.tar
 
       - name: Cache
         uses: actions/cache@v3.0.11
@@ -66,10 +66,10 @@ jobs:
         cluster_name: kind
 
     - name: load the playstudio docker image into kind cluster
-      run: kind load image-archive playstudio.tar
+      run: kind load image-archive playstudios.tar
     
     - name: deploy the docker image into dev cluster
       run: |
-        kubectl run playstudio --image=playstudio:latest --image-pull-policy=IfNotPresent
+        kubectl run playstudios --image=playstudios:latest --image-pull-policy=IfNotPresent
         sleep 5
         kubectl get pod   
