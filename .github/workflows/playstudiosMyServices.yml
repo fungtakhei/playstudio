@@ -19,7 +19,6 @@ jobs:
   test_build:
     runs-on: ubuntu-latest    
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout code
         uses: actions/checkout@v3
       
