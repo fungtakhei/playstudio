@@ -61,11 +61,15 @@ jobs:
         
     - name: create KIND k8s cluster
       uses: helm/kind-action@v1.3.0
-      with:        
+      with:
+        config: resources/cluster.yaml
         image: kindest/node:v1.25.2
 
     - name: load the playstudio docker image into kind cluster
       run: kind load image-archive playstudio.tar
     
     - name: deploy the docker image into dev cluster
-      run: kubectl run playstudio --image=playstudio:latest --image-pull-policy=IfNotPresent
+      run: |
+        kubectl run playstudio --image=playstudio:latest --image-pull-policy=IfNotPresent
+        sleep 5
+        kubectl get pod        
