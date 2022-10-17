@@ -38,7 +38,9 @@ jobs:
         run: docker build . --file Dockerfile --tag playstudios:latest
          
       - name: save the image as tar for deployment
-        run: docker save playstudios:latest -o playstudio.tar
+        run: |
+          docker save playstudios:latest -o playstudio.tar
+          ls ./
 
       - name: Cache
         uses: actions/cache@v3.0.11
@@ -74,7 +76,9 @@ jobs:
           --timeout=90s
 
     - name: load the playstudio docker image into kind cluster
-      run: kind load image-archive playstudio.tar
+      run: |
+        ls ./
+        kind load image-archive playstudio.tar
     
     - name: deploy the docker image into dev cluster
       run: |
