@@ -38,9 +38,7 @@ jobs:
         run: docker build . --file Dockerfile --tag playstudios:latest
          
       - name: save the image as tar for deployment
-        run: |
-          docker save playstudios:latest -o playstudio.tar
-          ls ./
+        run: docker save playstudios:latest -o playstudio.tar
 
       - name: Cache
         uses: actions/cache@v3.0.11
