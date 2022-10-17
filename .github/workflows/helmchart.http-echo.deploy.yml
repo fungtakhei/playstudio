@@ -1,0 +1,45 @@
+name: HELMCHART.HTTP-ECHO.DEPLOY
+
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: 
+    - 'http-echo/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+    - 'http-echo/**'
+  
+  workflow_dispatch:
+    
+
+jobs:
+  deployHelmOnKindK8sClusters:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout git repos
+      uses: actions/checkout@v3
+
+    - name: create KIND k8s cluster
+      uses: helm/kind-action@v1.3.0
+      with:
+        config: resources/cluster.yaml
+        image: kindest/node:v1.25.2
+        
+    - name: deploy nginx ingress
+      run: | 
+        kubectl apply -f ./resources/ingress.yaml
+        kubectl wait --namespace ingress-nginx \
+          --for=condition=ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=90s
+          
+    - name: deploy http-echo helm chart 
+      run: helm install http-echo --namespace dev --create-namespace http-echo/
+      
+    - name: verify deployment by curl
+      run: |
+        sleep 15
+        curl http://localhost:8080
+        curl http://localhost:8081
